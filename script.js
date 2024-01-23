@@ -23,6 +23,27 @@ function setup() {
   canvas.width = width;
   canvas.height = height;
   setInterval(draw, 10);
+  canvas.addEventListener("mousemove", mouseDragged);
+  canvas.addEventListener("mousedown", (e) => {
+    dragging = true;
+  });
+  canvas.addEventListener("mouseup", (e) => {
+    dragging = false;
+  });
+
+  document.onkeydown = function (e) {
+    if (e.key.toLowerCase() == "c") {
+      toggleColors = !toggleColors;
+    }
+    if (e.key.toLowerCase() == "arrowup") {
+      placementMatrixSize++;
+    }
+    if (e.key.toLowerCase() == "arrowdown") {
+      if (placementMatrixSize > 1) {
+        placementMatrixSize--;
+      }
+    }
+  };
 }
 
 function HSVtoRGB(h, s, v) {
@@ -73,7 +94,7 @@ function createGrid() {
 function draw() {
   background("black");
   const nextGrid = createGrid();
-  
+
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
       val = grid[i][j];
@@ -99,17 +120,17 @@ function draw() {
         if (grid[i][j + 1] == 0) {
           nextGrid[i][j + 1] = val;
         }
-        
+
         // Go one way
         else if (dirB == 0) {
           nextGrid[i + direction][j + 1] = val;
         }
-        
+
         // Go the other way
         else if (dirA == 0) {
           nextGrid[i - direction][j + 1] = val;
         }
-        
+
         // Stay
         else {
           nextGrid[i][j] = val;
@@ -157,25 +178,4 @@ function placeSand(x, y) {
   grid[x][y] = hue;
 }
 
-setup();
-canvas.addEventListener("mousemove", mouseDragged);
-canvas.addEventListener("mousedown", (e) => {
-  dragging = true;
-});
-canvas.addEventListener("mouseup", (e) => {
-  dragging = false;
-});
-
-document.onkeydown = function (e) {
-  if (e.key.toLowerCase() == "c") {
-    toggleColors = !toggleColors;
-  }
-  if (e.key.toLowerCase() == "arrowup") {
-    placementMatrixSize++;
-  }
-  if (e.key.toLowerCase() == "arrowdown") {
-    if (placementMatrixSize > 1) {
-      placementMatrixSize--;
-    }
-  }
-};
+window.addEventListener("load", setup);
