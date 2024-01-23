@@ -76,7 +76,7 @@ function draw() {
 
         let left, right;
 
-        if (i - 1 > 0) left = grid[i - 1][j + 1];
+        if (i - 1 >= 0) left = grid[i - 1][j + 1];
         if (i + 1 < cols) right = grid[i + 1][j + 1];
 
         // Go down
