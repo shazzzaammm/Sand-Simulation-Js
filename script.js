@@ -1,19 +1,28 @@
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
+
 const width = window.innerWidth;
 const height = window.innerHeight;
-const w = 10;
+
+const w = 5;
+
 const rows = Math.floor(height / w);
 const cols = Math.floor(width / w);
+
 let grid = createGrid();
+
 let dragging = false;
-let hue = 0;
+
 let toggleColors = false;
+let hue = 0;
+
+let placementMatrixSize = 2;
+
 function setup() {
   document.body.appendChild(canvas);
   canvas.width = width;
   canvas.height = height;
-  setInterval(draw, 30);
+  setInterval(draw, 10);
 }
 
 function HSVtoRGB(h, s, v) {
@@ -63,7 +72,8 @@ function createGrid() {
 
 function draw() {
   background("black");
-  let nextGrid = createGrid();
+  const nextGrid = createGrid();
+  
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
       val = grid[i][j];
@@ -81,6 +91,7 @@ function draw() {
         // pick randomly between left and right
         let direction = Math.random() > 0.5 ? -1 : 1;
 
+        // check if each direction is valid
         if (i - direction >= 0 && i - direction < cols) dirA = grid[i - direction][j + 1];
         if (i + direction >= 0 && i + direction < cols) dirB = grid[i + direction][j + 1];
 
@@ -88,14 +99,17 @@ function draw() {
         if (grid[i][j + 1] == 0) {
           nextGrid[i][j + 1] = val;
         }
+        
         // Go one way
         else if (dirB == 0) {
           nextGrid[i + direction][j + 1] = val;
         }
+        
         // Go the other way
         else if (dirA == 0) {
           nextGrid[i - direction][j + 1] = val;
         }
+        
         // Stay
         else {
           nextGrid[i][j] = val;
@@ -121,14 +135,26 @@ function background(color) {
 
 function mouseDragged(e) {
   if (!dragging) return;
-  x = Math.floor(e.pageX / w);
-  y = Math.floor(e.pageY / w);
+  let x = Math.floor(e.pageX / w);
+  let y = Math.floor(e.pageY / w);
+
+  for (let i = 0; i < placementMatrixSize; i++) {
+    for (let j = 0; j < placementMatrixSize; j++) {
+      placeSand(x + i, y + j);
+      placeSand(x + i, y - j);
+      placeSand(x - i, y + j);
+      placeSand(x - i, y - j);
+    }
+  }
+  hue += 0.0005;
+  if (hue >= 1) hue = 0;
+}
+
+function placeSand(x, y) {
   if (x > cols - 1 || x <= 0) return;
   if (y > rows - 1 || y <= 0) return;
   if (grid[x][y] !== 0) return;
   grid[x][y] = hue;
-  hue += 0.0005;
-  if (hue >= 1) hue = 0;
 }
 
 setup();
@@ -143,5 +169,13 @@ canvas.addEventListener("mouseup", (e) => {
 document.onkeydown = function (e) {
   if (e.key.toLowerCase() == "c") {
     toggleColors = !toggleColors;
+  }
+  if (e.key.toLowerCase() == "arrowup") {
+    placementMatrixSize++;
+  }
+  if (e.key.toLowerCase() == "arrowdown") {
+    if (placementMatrixSize > 1) {
+      placementMatrixSize--;
+    }
   }
 };
