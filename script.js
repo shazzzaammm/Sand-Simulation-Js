@@ -81,8 +81,8 @@ function draw() {
         // pick randomly between left and right
         let direction = Math.random() > 0.5 ? -1 : 1;
 
-        if (i - direction >= 0) dirA = grid[i - direction][j + 1];
-        if (i + direction < cols) dirB = grid[i + direction][j + 1];
+        if (i - direction >= 0 && i - direction < cols) dirA = grid[i - direction][j + 1];
+        if (i + direction >= 0 && i + direction < cols) dirB = grid[i + direction][j + 1];
 
         // Go down
         if (grid[i][j + 1] == 0) {
