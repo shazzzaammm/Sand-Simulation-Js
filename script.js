@@ -2,7 +2,7 @@ const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 const width = window.innerWidth;
 const height = window.innerHeight;
-const w = 20;
+const w = 10;
 const rows = Math.floor(height / w);
 const cols = Math.floor(width / w);
 let grid = createGrid();
@@ -11,7 +11,7 @@ function setup() {
   document.body.appendChild(canvas);
   canvas.width = width;
   canvas.height = height;
-  setInterval(draw, 25);
+  setInterval(draw, 30);
 }
 
 function createGrid() {
@@ -34,9 +34,26 @@ function draw() {
       if (val > 0) {
         fill("white");
         rect(i * w, j * w, w, w);
+
+        let left, right;
+
+        if (i - 1 > 0) left = grid[i - 1][j + 1];
+        if (i + 1 < cols) right = grid[i + 1][j + 1];
+
+        // Go down
         if (grid[i][j + 1] == 0) {
           nextGrid[i][j + 1] = val;
-        } else {
+        }
+        // Go right
+        else if (right == 0) {
+          nextGrid[i + 1][j + 1] = val;
+        }
+        // Go left
+        else if (left == 0) {
+          nextGrid[i - 1][j + 1] = val;
+        }
+        // Stay
+        else {
           nextGrid[i][j] = val;
         }
       }
