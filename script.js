@@ -31,6 +31,14 @@ function setup() {
     dragging = false;
   });
 
+  canvas.addEventListener("touchmove", mouseDragged);
+  canvas.addEventListener("touchstart", (e) => {
+    dragging = true;
+  });
+  canvas.addEventListener("touchend", (e) => {
+    dragging = false;
+  });
+
   document.onkeydown = function (e) {
     if (e.key.toLowerCase() == "c") {
       toggleColors = !toggleColors;
@@ -156,9 +164,21 @@ function background(color) {
 
 function mouseDragged(e) {
   if (!dragging) return;
-  let x = Math.floor(e.pageX / w);
-  let y = Math.floor(e.pageY / w);
+  let x, y;
+  if (e.targetTouches == null) {
+    x = Math.floor(e.pageX / w);
+    y = Math.floor(e.pageY / w);
+    placeMatrix(x, y);
+  } else {
+    for (let i = 0; i < e.targetTouches.length; i++) {
+      x = Math.floor(e.targetTouches[i].pageX / w);
+      y = Math.floor(e.targetTouches[i].pageY / w);
+      placeMatrix(x, y);
+    }
+  }
+}
 
+function placeMatrix(x, y) {
   for (let i = 0; i < placementMatrixSize; i++) {
     for (let j = 0; j < placementMatrixSize; j++) {
       placeSand(x + i, y + j);
