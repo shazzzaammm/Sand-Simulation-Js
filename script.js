@@ -8,6 +8,7 @@ const cols = Math.floor(width / w);
 let grid = createGrid();
 let dragging = false;
 let hue = 0;
+let toggleColors = false;
 function setup() {
   document.body.appendChild(canvas);
   canvas.width = width;
@@ -71,7 +72,11 @@ function draw() {
       val = grid[i][j];
       if (val > 0) {
         color = HSVtoRGB(val, 1, 1);
-        fill(`rgb(${color.r},${color.g},${color.b})`);
+        if (toggleColors) {
+          fill(`rgb(${color.r},${color.g},${color.b})`);
+        } else {
+          fill("rgb(242,210,169)");
+        }
         rect(i * w, j * w, w, w);
 
         let left, right;
@@ -131,3 +136,9 @@ canvas.addEventListener("mousedown", (e) => {
 canvas.addEventListener("mouseup", (e) => {
   dragging = false;
 });
+
+document.onkeydown = function (e) {
+  if (e.key.toLowerCase() == "c") {
+    toggleColors = !toggleColors;
+  }
+};
