@@ -123,6 +123,10 @@ function mouseDragged(e) {
   if (!dragging) return;
   x = Math.floor(e.pageX / w);
   y = Math.floor(e.pageY / w);
+  console.log(x + " " + y);
+  if (x > cols - 1 || x <= 0) return;
+  if (y > rows - 1 || y <= 0) return;
+  if (grid[x][y] !== 0) return;
   grid[x][y] = hue;
   hue += 0.0005;
   if (hue >= 1) hue = 0;
