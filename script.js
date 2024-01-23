@@ -18,9 +18,6 @@ function setup() {
 
 function HSVtoRGB(h, s, v) {
   var r, g, b, i, f, p, q, t;
-  if (arguments.length === 1) {
-    (s = h.s), (v = h.v), (h = h.h);
-  }
   i = Math.floor(h * 6);
   f = h * 6 - i;
   p = v * (1 - s);
@@ -79,22 +76,25 @@ function draw() {
         }
         rect(i * w, j * w, w, w);
 
-        let left, right;
+        let dirA, dirB;
 
-        if (i - 1 >= 0) left = grid[i - 1][j + 1];
-        if (i + 1 < cols) right = grid[i + 1][j + 1];
+        // pick randomly between left and right
+        let direction = Math.random() > 0.5 ? -1 : 1;
+
+        if (i - direction >= 0) dirA = grid[i - direction][j + 1];
+        if (i + direction < cols) dirB = grid[i + direction][j + 1];
 
         // Go down
         if (grid[i][j + 1] == 0) {
           nextGrid[i][j + 1] = val;
         }
-        // Go right
-        else if (right == 0) {
-          nextGrid[i + 1][j + 1] = val;
+        // Go one way
+        else if (dirB == 0) {
+          nextGrid[i + direction][j + 1] = val;
         }
-        // Go left
-        else if (left == 0) {
-          nextGrid[i - 1][j + 1] = val;
+        // Go the other way
+        else if (dirA == 0) {
+          nextGrid[i - direction][j + 1] = val;
         }
         // Stay
         else {
